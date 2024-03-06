@@ -17,6 +17,8 @@ namespace BallClicker
         private Color colorBall;
         private Vector2 _newScale;
 
+        private bool isImmortal=false;
+
         private float _minScaleX = 0.8f;
         private float _maxScaleX = 2f;
         private float newScale;
@@ -37,8 +39,11 @@ namespace BallClicker
         }
         private void OnMouseDown()
         {
-            OnBallDistroy();
-            Death();
+            if(!isImmortal)
+            {
+                OnBallDistroy();
+                Death();
+            }
         }
         private void NewColor()
         {
@@ -51,6 +56,19 @@ namespace BallClicker
             Destroy(gameObject);
             _effectPrafab.GetComponent<ParticleSystem>().startColor = colorBall;
             Instantiate(_effectPrafab, _transform.position, _transform.rotation);
+        }
+
+        void ReversImmortalStatus()
+        {
+            isImmortal=!isImmortal;
+        }
+        private void OnEnable()
+        {
+            PauseButton.OnPause += ReversImmortalStatus;
+        }
+        private void OnDisable()
+        {
+            PauseButton.OnPause -= ReversImmortalStatus;
         }
     }
     
